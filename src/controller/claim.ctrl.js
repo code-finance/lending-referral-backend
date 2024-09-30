@@ -10,11 +10,15 @@ const {TAL} = require('../config/contracts');
 const {BigNumber} = require('@ethersproject/bignumber');
 const {getWeb3} = require('../utils/awskms');
 
+const isEVM = (chainId) => {
+  return chainId === 1 || chainId === 11155111 || chainId === 8217 || chainId === 1001;
+};
+
 async function claimReward(to, amount, chainId) {
   let result = 1; // TODO test : this should be 0
   try {
     console.log('!! Claim Reward : ', to, amount, chainId);
-    if (isEVN(chainId)) {
+    if (isEVM(chainId)) {
       const web3 = getWeb3(chainId);
       const accounts = await web3.eth.getAccounts();
       const talContract = new web3.eth.Contract(erc20Abi, TAL[chainId]);
