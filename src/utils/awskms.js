@@ -19,13 +19,13 @@ module.exports = {
     const accessKeyId = process.env.ACCESS_KEY_ID;
     const secretAccessKey = process.env.SECRET_ACCESS_KEY;
     const region = process.env.REGION;
-    const kmsProvider = new KmsProvider(process.env.KLAYTN_NODE, {
+    const provider = new KmsProvider(process.env.KLAYTN_NODE, {
       region,
       keyIds: [process.env.KEY_ID],
       credential: {accessKeyId, secretAccessKey},
     });
 
-    return new Web3(kmsProvider);
+    return new Web3(provider);
   },
   getWeb3: function (chainId) {
     if (chainId === 1001 || chainId === 8217) return libs.getKlaytnWeb3();
