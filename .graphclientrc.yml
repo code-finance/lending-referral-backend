@@ -1,0 +1,6 @@
+# .graphclientrc.yml
+sources:
+  - name: balancer-v2
+    handler:
+      graphql:
+        endpoint: https://balapi2.taalswap.fi/subgraphs/name/kommune/balancer-v2
