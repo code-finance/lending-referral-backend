@@ -12,9 +12,6 @@ const swaggerDoc = require('./lib/swaggerDoc');
 const app = express();
 const port = process.env.PORT || 6001;
 
-const cron = require('node-cron');
-const batcher = require('./controller/batcher/index');
-
 app.use(
   cors({
     // origin: [
@@ -38,13 +35,3 @@ app.use('/api/claim', claim);
 app.listen(port, () => {
   console.log(`App is listening at http://localhost:${port}`);
 });
-
-// Schedule the cron job to run every minute
-const task = cron.schedule('*/10 * * * * *', async () => {
-  console.log('----------------------------------------------------------------------------');
-  await batcher.liquidityBatch();
-  // await batcher.stakingBatch();
-  // await batcher.referralBatch();
-});
-
-task.start();

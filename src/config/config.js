@@ -1,4 +1,6 @@
 const ChainId = {
+  ETH: 1,
+  SEPOLIA: 11155111,
   KAIA: 8217,
   KAIROS: 1001,
 };

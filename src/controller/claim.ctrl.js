@@ -5,42 +5,46 @@ const {ethers} = require('ethers');
 const {ErrorMessage} = require('../utils/errorMessage');
 const {validationResult} = require('express-validator');
 const {_errorFormatter} = require('../utils/helper');
-const {getKlaytnKmsWeb3} = require('../utils/awskms');
 const erc20Abi = require('../config/abi/ERC20Token.json');
-const {KDO} = require('../config/contracts');
+const {TAL} = require('../config/contracts');
 const {BigNumber} = require('@ethersproject/bignumber');
+const {getWeb3} = require('../utils/awskms');
 
-async function transferKDO(to, amount) {
+async function claimReward(to, amount, chainId) {
   let result = 1; // TODO test : this should be 0
   try {
-    console.log(`!! Claim KDO to ${to} ${amount}`);
-    const web3 = getKlaytnKmsWeb3();
-    const accounts = await web3.eth.getAccounts();
-    const kdoContract = new web3.eth.Contract(erc20Abi, KDO[process.env.CHAIN_ID]);
+    console.log('!! Claim Reward : ', to, amount, chainId);
+    if (isEVN(chainId)) {
+      const web3 = getWeb3(chainId);
+      const accounts = await web3.eth.getAccounts();
+      const talContract = new web3.eth.Contract(erc20Abi, TAL[chainId]);
 
-    let method = kdoContract.methods.balanceOf(accounts[0]);
-    const balance = await method.call();
-    console.log(`!! ${balance} KDO left in the wallet ${accounts[0]}`);
+      let method = talContract.methods.balanceOf(accounts[0]);
+      const balance = await method.call();
+      console.log(`!! ${balance} KDO left in the wallet ${accounts[0]}`);
 
-    if (BigNumber.from(balance).gt(ethers.parseEther(amount.toString()))) {
-      // method = kdoContract.methods.transfer(amount, to);
-      // const gasAmount = await method.estimateGas({from: accounts[0]}).catch((e) => {
-      //   console.log('estimateGas error : ', e);
-      // });
-      // const receipt = await method
-      //   .send({from: accounts[0], gas: gasAmount, value: 0})
-      //   .on('error', (e) => {
-      //     console.log('tx send error : ', e);
-      //   })
-      //   .catch((e) => {
-      //     console.log('transfer error : ', e);
-      //   });
-      //
-      // const txHash = receipt.transactionHash;
-      // result = parseInt(receipt.result);
-      // console.log('Claim result : ', txHash, result);
+      if (BigNumber.from(balance).gt(ethers.parseEther(amount.toString()))) {
+        // method = talContract.methods.transfer(amount, to);
+        // const gasAmount = await method.estimateGas({from: accounts[0]}).catch((e) => {
+        //   console.log('estimateGas error : ', e);
+        // });
+        // const receipt = await method
+        //   .send({from: accounts[0], gas: gasAmount, value: 0})
+        //   .on('error', (e) => {
+        //     console.log('tx send error : ', e);
+        //   })
+        //   .catch((e) => {
+        //     console.log('transfer error : ', e);
+        //   });
+        //
+        // const txHash = receipt.transactionHash;
+        // result = parseInt(receipt.result);
+        // console.log('Claim result : ', txHash, result);
+      } else {
+        console.log('!! KDO balance is too low');
+      }
     } else {
-      console.log('!! KDO balance is too low');
+      // TON chain
     }
   } catch (e) {
     console.log('!! Claim KDO failed : ', e);
@@ -61,16 +65,15 @@ module.exports = {
       if (wallet !== ethers.getAddress(req.body.walletAddress))
         return handlerError(req, res, ErrorMessage.ADDRESS_MISMATCH);
 
+      const chainId = req.body.chainId;
+
       let record = await models.referrals.findByWallet(wallet);
       if (!record) return handlerError(req, res, ErrorMessage.WALLET_NOT_FOUND);
 
-      const result = await transferKDO(wallet, record.points);
+      const result = await claimReward(wallet, record.points, chainId);
 
       if (result) {
         record.points = 0;
-        record.liquidity = 0;
-        record.staking = 0;
-        record.referral = 0;
         record = await record.save();
         return handlerSuccess(req, res, record);
       } else {

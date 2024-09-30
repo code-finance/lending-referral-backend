@@ -23,6 +23,13 @@ const isAuth = require('../utils/validate_token');
  *         schema:
  *           type: string
  *           example: '0xdc926E34E73292cD7c48c6fD7375af7D93435D36'
+ *     requestBody:
+ *       description: claim data
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/definitions/Claim'
  *     responses:
  *       "200":
  *         description: "successful operation"
