@@ -74,10 +74,10 @@ module.exports = {
       let record = await models.referrals.findByWallet(wallet);
       if (!record) return handlerError(req, res, ErrorMessage.WALLET_NOT_FOUND);
 
-      const result = await claimReward(wallet, record.points, chainId);
+      const result = await claimReward(wallet, record.rewards, chainId);
 
       if (result) {
-        record.points = 0;
+        record.rewards = 0;
         record = await record.save();
         return handlerSuccess(req, res, record);
       } else {

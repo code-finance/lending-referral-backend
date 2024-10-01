@@ -46,6 +46,52 @@ referralRouter.get('/:wallet', referralValidator.referral(), referralCtrl.getRef
 
 /**
  * @swagger
+ * /api/referral/list/{wallet}:
+ *   get:
+ *     tags:
+ *       - Referral
+ *     description: referral 조회
+ *     produces:
+ *     - "application/json"
+ *     parameters:
+ *       - in: path
+ *         name: wallet
+ *         required: true
+ *         description: wallet address
+ *         schema:
+ *           type: string
+ *           example: '0xdc926E34E73292cD7c48c6fD7375af7D93435D36'
+ *     responses:
+ *       "200":
+ *         description: "successful operation"
+ */
+referralRouter.get('/list/:wallet', referralValidator.referrals(), referralCtrl.getReferrals);
+
+/**
+ * @swagger
+ * /api/referral/details/{wallet}:
+ *   get:
+ *     tags:
+ *       - Referral
+ *     description: referral 조회
+ *     produces:
+ *     - "application/json"
+ *     parameters:
+ *       - in: path
+ *         name: wallet
+ *         required: true
+ *         description: wallet address
+ *         schema:
+ *           type: string
+ *           example: '0xdc926E34E73292cD7c48c6fD7375af7D93435D36'
+ *     responses:
+ *       "200":
+ *         description: "successful operation"
+ */
+referralRouter.get('/details/:wallet', referralValidator.getDetails(), referralCtrl.getDetails);
+
+/**
+ * @swagger
  * /api/referral/{wallet}/register:
  *   post:
  *     tags:

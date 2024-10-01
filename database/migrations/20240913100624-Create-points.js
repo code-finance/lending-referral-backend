@@ -12,6 +12,21 @@ module.exports = {
       wallet: {
         type: Sequelize.STRING,
       },
+      market: {
+        type: Sequelize.STRING,
+      },
+      asset: {
+        type: Sequelize.STRING,
+      },
+      debt: {
+        type: Sequelize.FLOAT,
+      },
+      apy: {
+        type: Sequelize.FLOAT,
+      },
+      state: {
+        type: Sequelize.STRING,
+      },
       point: {
         type: Sequelize.BIGINT,
       },

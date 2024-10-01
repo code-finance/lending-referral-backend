@@ -7,7 +7,13 @@ module.exports = (sequelize, Sequelize) => {
     myCode: {
       type: Sequelize.STRING,
     },
-    points: {
+    rewards: {
+      type: Sequelize.BIGINT,
+    },
+    referral: {
+      type: Sequelize.BIGINT,
+    },
+    lending: {
       type: Sequelize.BIGINT,
     },
     myReferral: {
@@ -29,11 +35,12 @@ module.exports = (sequelize, Sequelize) => {
 
   Referrals.findByMyReferral = async function (myReferral) {
     const options = {where: {myReferral}};
+    console.log('===========', options);
     return await this.findAll(options);
   };
 
   Referrals.getTop = async function (num) {
-    const options = {order: [['points', 'DESC']], limit: num};
+    const options = {order: [['rewards', 'DESC']], limit: num};
     return await this.findAll(options);
   };
 
@@ -50,6 +57,25 @@ module.exports = (sequelize, Sequelize) => {
       });
     }
     return amount;
+  };
+
+  Referrals.salePointsHistoryByReferralCode = async function (myReferral, points) {
+    let options = {where: {myReferral}};
+    options.include = [{model: points}];
+    options.attributes = {
+      include: [
+        [
+          sequelize.literal(
+            `(select count(*)
+                            from "points"
+                            where "wallet" = "referrals".wallet
+                            )`,
+          ),
+          'soldAmount',
+        ],
+      ],
+    };
+    return await this.findAll(options);
   };
 
   return Referrals;

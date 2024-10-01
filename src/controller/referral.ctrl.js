@@ -26,6 +26,54 @@ module.exports = {
       return handlerError(req, res, e.message);
     }
   },
+  getReferrals: async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        let errorMsg = _errorFormatter(errors.array());
+        return handlerError(req, res, errorMsg);
+      }
+
+      const wallet = ethers.getAddress(req.params.wallet);
+
+      let record = await models.referrals.findByWallet(wallet);
+      if (!record) return handlerError(req, res, ErrorMessage.WALLET_NOT_FOUND);
+
+      let records = await models.referrals.findByMyReferral(record.myCode);
+      if (records.length === 0) return handlerError(req, res, ErrorMessage.REFERRALS_NOT_FOUND);
+
+      return handlerSuccess(req, res, records);
+    } catch (e) {
+      console.log(e);
+      return handlerError(req, res, e.message);
+    }
+  },
+  getDetails: async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        let errorMsg = _errorFormatter(errors.array());
+        return handlerError(req, res, errorMsg);
+      }
+
+      const wallet = ethers.getAddress(req.params.wallet);
+
+      let record = await models.referrals.findByWallet(wallet);
+      if (!record) return handlerError(req, res, ErrorMessage.WALLET_NOT_FOUND);
+
+      const records = await models.referrals.salePointsHistoryByReferralCode(
+        record.myCode,
+        models.points,
+      );
+      if (records.length === 0)
+        return handlerError(req, res, ErrorMessage.REFERRAL_DETAILS_NOT_FOUND);
+
+      return handlerSuccess(req, res, records);
+    } catch (e) {
+      console.log(e);
+      return handlerError(req, res, e.message);
+    }
+  },
   register: async (req, res) => {
     try {
       const errors = validationResult(req);
@@ -48,10 +96,9 @@ module.exports = {
         record = new models.referrals({
           wallet,
           myCode,
-          points: 0,
-          liquidity: 0,
-          staking: 0,
+          rewards: 0,
           referral: 0,
+          lending: 0,
           myReferral,
         });
         await record.save();

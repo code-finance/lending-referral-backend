@@ -37,5 +37,5 @@ db.points = require('./points')(sequelize, Sequelize);
 db.actions = require('./actions')(sequelize, Sequelize);
 
 db.points.belongsTo(db.actions, {foreignKey: {name: 'actionId'}});
-
+db.referrals.hasMany(db.points, {foreignKey: {name: 'wallet'}});
 module.exports = db;

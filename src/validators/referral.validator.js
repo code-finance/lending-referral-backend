@@ -5,6 +5,9 @@ module.exports = {
   referral: () => {
     return [param('wallet').trim().not().isEmpty().withMessage('Missing wallet parameter')];
   },
+  referrals: () => {
+    return [param('wallet').trim().not().isEmpty().withMessage('Missing wallet parameter')];
+  },
   register: () => {
     return [param('wallet').trim().not().isEmpty().withMessage('Missing wallet parameter')];
   },
@@ -16,5 +19,8 @@ module.exports = {
   },
   getTop: () => {
     return [param('num').trim().not().isEmpty().withMessage('Missing num parameter')];
+  },
+  getDetails: () => {
+    return [param('wallet').trim().not().isEmpty().withMessage('Missing wallet parameter')];
   },
 };

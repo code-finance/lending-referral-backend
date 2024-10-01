@@ -6,4 +6,6 @@ exports.ErrorMessage = {
   ADDRESS_MISMATCH: 'Wallet address mismatch!',
   INVALID_ACTION_ID: 'Invalid action id',
   NO_WALLETS: 'No wallets found.',
+  REFERRALS_NOT_FOUND: 'No my referrals found',
+  REFERRAL_DETAILS_NOT_FOUND: 'No referral details found',
 };

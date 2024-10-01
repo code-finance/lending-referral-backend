@@ -38,23 +38,25 @@ module.exports = {
         return handlerError(req, res, ErrorMessage.ADDRESS_MISMATCH);
       const point = req.body.point;
       const actionId = req.body.actionId;
+      const market = req.body.market ?? 'Ethereum';
+      const asset = req.body.asset ?? 'USDT';
+      const debt = req.body.debt ?? '100.0';
+      const apy = req.body.apy ?? '12.34';
+      const state = req.body.state ?? 'Completed';
 
       let referral = await models.referrals.findByWallet(wallet);
       if (!referral) return handlerError(req, res, ErrorMessage.WALLET_NOT_FOUND);
 
-      let record = new models.points({wallet, point, actionId});
+      let record = new models.points({wallet, market, asset, debt, apy, state, point, actionId});
       record = await record.save();
 
-      referral.points = parseInt(referral.points) + parseInt(point);
+      referral.rewards = parseInt(referral.rewards) + parseInt(point);
       switch (actionId) {
         case '1':
           referral.referral = parseInt(referral.referral) + parseInt(point);
           break;
         case '2':
-          referral.liquidity = parseInt(referral.liquidity) + parseInt(point);
-          break;
-        case '3':
-          referral.staking = parseInt(referral.staking) + parseInt(point);
+          referral.lending = parseInt(referral.lending) + parseInt(point);
           break;
         default:
           return handlerError(req, res, ErrorMessage.INVALID_ACTION_ID);

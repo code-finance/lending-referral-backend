@@ -11,10 +11,13 @@ module.exports = {
       myCode: {
         type: Sequelize.STRING,
       },
-      points: {
+      rewards: {
         type: Sequelize.BIGINT,
       },
       referral: {
+        type: Sequelize.BIGINT,
+      },
+      lending: {
         type: Sequelize.BIGINT,
       },
       myReferral: {
