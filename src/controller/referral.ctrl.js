@@ -124,6 +124,8 @@ module.exports = {
         return handlerError(req, res, ErrorMessage.ADDRESS_MISMATCH);
 
       const myReferral = req.body.myReferral;
+      let friend = await models.referrals.findByMyCode(myReferral);
+      if (!friend) return handlerError(req, res, ErrorMessage.INVALID_REFERRAL_CODE);
 
       let record = await models.referrals.findByWallet(wallet);
       if (!record) return handlerError(req, res, ErrorMessage.WALLET_NOT_FOUND);

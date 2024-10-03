@@ -33,6 +33,11 @@ module.exports = (sequelize, Sequelize) => {
     return await this.findOne(options);
   };
 
+  Referrals.findByMyCode = async function (myCode) {
+    const options = {where: {myCode}};
+    return await this.findOne(options);
+  };
+
   Referrals.findByMyReferral = async function (myReferral) {
     const options = {where: {myReferral}};
     console.log('===========', options);

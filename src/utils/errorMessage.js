@@ -8,4 +8,5 @@ exports.ErrorMessage = {
   NO_WALLETS: 'No wallets found.',
   REFERRALS_NOT_FOUND: 'No my referrals found',
   REFERRAL_DETAILS_NOT_FOUND: 'No referral details found',
+  INVALID_REFERRAL_CODE: 'Invalid referral code',
 };
